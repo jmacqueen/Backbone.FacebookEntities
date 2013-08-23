@@ -1,6 +1,6 @@
 Backbone.FacebookModel = Backbone.Model.extend({
 	sync: function(method, model, options){
-
+		var deferred = $.Deferred();
 		// Ensure that we have a URL.
 		var fbApiUrl;
 		if (!options.url) {
@@ -28,20 +28,26 @@ Backbone.FacebookModel = Backbone.Model.extend({
 				if (options.fields){
 					fbApiUrl = fbApiUrl + "?fields=" + options.fields;
 				}
+				console.log("FacebookModel read: " + fbApiUrl);
 				FB.api(fbApiUrl, function(result){
 					if (result.error) {
-						options.error(result);
+						console.log(result.error);
+						options.error(result.error);
+						deferred.resolve(result.error);
 					} else {
 						options.success(result);
+						deferred.resolve();
 					}
 				});
 			break;
 		}
+		return deferred.promise();
 	}
 });
 
 Backbone.FacebookCollection = Backbone.Collection.extend({
 	sync: function(method, collection, options){
+		var deferred = $.Deferred();
 		// Ensure that we have a URL.
 		var fbApiUrl;
 		if (!options.url) {
@@ -68,16 +74,20 @@ Backbone.FacebookCollection = Backbone.Collection.extend({
 				if (options.fields){
 					fbApiUrl = fbApiUrl + "?fields=" + options.fields;
 				}
+				console.log("FacebookCollection read: " + fbApiUrl);
 				FB.api(fbApiUrl, function(result){
 					if (result.error) {
+						console.log(result.error);
 						options.error(result.error);
+						deferred.resolve();
 					} else {
+						console.log("success!");
 						options.success(result.data);
+						deferred.resolve();
 					}
-
 				});
 			break;
 		}
-
+		return deferred.promise();
 	}
 });
