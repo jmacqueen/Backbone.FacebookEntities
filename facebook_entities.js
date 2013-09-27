@@ -1,6 +1,7 @@
 Backbone.FacebookModel = Backbone.Model.extend({
 	sync: function(method, model, options){
 		var deferred = $.Deferred();
+		var self = this;
 		// Ensure that we have a URL.
 		var fbApiUrl;
 		if (!options.url) {
@@ -36,7 +37,7 @@ Backbone.FacebookModel = Backbone.Model.extend({
 						deferred.resolve(result.error);
 					} else {
 						options.success(result);
-						deferred.resolve();
+						deferred.resolve(self);
 					}
 				});
 			break;
@@ -48,6 +49,7 @@ Backbone.FacebookModel = Backbone.Model.extend({
 Backbone.FacebookCollection = Backbone.Collection.extend({
 	sync: function(method, collection, options){
 		var deferred = $.Deferred();
+		var self = this;
 		// Ensure that we have a URL.
 		var fbApiUrl;
 		if (!options.url) {
@@ -79,11 +81,11 @@ Backbone.FacebookCollection = Backbone.Collection.extend({
 					if (result.error) {
 						console.log(result.error);
 						options.error(result.error);
-						deferred.resolve();
+						deferred.resolve(result.error);
 					} else {
 						console.log("success!");
 						options.success(result.data);
-						deferred.resolve();
+						deferred.resolve(self);
 					}
 				});
 			break;
